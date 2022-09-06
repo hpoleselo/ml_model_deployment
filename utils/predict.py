@@ -19,6 +19,6 @@ def predict_digit(model, img_name : str) -> str:
     plt.axis(False)
     plt.title(y_pred)
     name = os.path.split(img_name)[1]
-    plt.savefig(f'results/pred_{name}', bbox_inches='tight')
+    #plt.savefig(f'results/pred_{name}', bbox_inches='tight')
 
     return str(y_pred)
