@@ -3,7 +3,6 @@ import logging
 import google.cloud.logging
 
 client = storage.Client()
-
 application_bucket = client.get_bucket('ml_model_api')
 
 # Python's Native Logging
@@ -16,12 +15,14 @@ client = google.cloud.logging.Client()
 client.get_default_handler()
 client.setup_logging()
 
-def write_to_gcs(filename: str, bucket: str = application_bucket) -> str:
+def write_to_gcs(filename: str, file_bytes: bytes, bucket: str = application_bucket) -> str:
     """ Writes to a file to Google Cloud Storage bucket. 
     
     Args:
     - bucket_name: Cloud storage client bucket
     - filename: Absolute path to the filename to be uploaded
+
+    https://stackoverflow.com/questions/71858816/error-uploading-file-to-google-cloud-storage
 
     Returns:
     - object_gcs_id: String of the uploaded file
@@ -30,9 +31,11 @@ def write_to_gcs(filename: str, bucket: str = application_bucket) -> str:
     try:
         object_name_in_gcs_bucket = bucket.blob(filename)
         # TODO: Check if slicing for the filename is needed
-        object_name_in_gcs_bucket.upload_from_filename(filename)
+        #object_name_in_gcs_bucket.upload_from_filename(filename)
+        object_name_in_gcs_bucket.upload_from_string(file_bytes)
         logger.info(f"File {filename} succesfully written to GCS {bucket.name} bucket.")
         logger.info(f"With given object id: {bucket.id}.")
+        logger.info(f"{object_name_in_gcs_bucket.id}")
         return bucket.id
     except FileNotFoundError as e:
         logger.error(f"Could not find given file, check if the path is correct.\n{e}")
@@ -42,14 +45,13 @@ def read_from_gcs(filename: str, bucket: str = application_bucket):
     
     https://cloud.google.com/storage/docs/downloading-objects?hl=pt_br#code-samples-download-object
     """
-    output_path = f"downloaded_{filename}"
     blob = bucket.blob(filename)
-    blob.download_to_filename(output_path)
+    blob.download_to_filename(filename)
     logger.info("Downloaded file from GCS succesfully.")
+    return filename
     # If downloading to memory (to a string)
     #contents = blob.download_as_string()
     #print(contents)
-
 
 if __name__ == "__main__":
     write_to_gcs("test.txt")
