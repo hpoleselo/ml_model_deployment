@@ -16,7 +16,7 @@ client = google.cloud.logging.Client()
 client.get_default_handler()
 client.setup_logging()
 
-def write_to_gcs(filename: str, bucket: str = application_bucket):
+def write_to_gcs(filename: str, bucket: str = application_bucket) -> str:
     """ Writes to a file to Google Cloud Storage bucket. 
     
     Args:
@@ -33,6 +33,7 @@ def write_to_gcs(filename: str, bucket: str = application_bucket):
         object_name_in_gcs_bucket.upload_from_filename(filename)
         logger.info(f"File {filename} succesfully written to GCS {bucket.name} bucket.")
         logger.info(f"With given object id: {bucket.id}.")
+        return bucket.id
     except FileNotFoundError as e:
         logger.error(f"Could not find given file, check if the path is correct.\n{e}")
 
