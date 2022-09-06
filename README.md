@@ -49,4 +49,9 @@ One important reminder is to create the virtual environment properly in the Linu
 
 `$ sudo apt-get install python3.10-venv`
 
+## Resources
 
+Useful resources consulted while developing this API:
+- https://stackoverflow.com/questions/71858816/error-uploading-file-to-google-cloud-storage
+- https://cloud.google.com/python/docs/reference/storage/latest/google.cloud.storage.blob.Blob
+- https://github.com/protocolbuffers/protobuf/issues/10051
