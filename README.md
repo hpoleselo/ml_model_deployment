@@ -6,11 +6,25 @@ Deployment of a simple digit predictor ML model using GCP Cloud Run and exposing
 
 Install the required packages:
 
-`$ pip install -r requirements.txt`
+`$ pip install -r --no-cache-dir requirements.txt`
 
 Make sure to be in the root folder of the project and:
 
 ` $ uvicorn app.main:app --reload `
+
+## Running the API locally using Podman/Docker
+
+Either authenticate your local with ADC (as shown in Deploying to Cloud section) or download the JSON credentials file from GCP for your service account and set `GOOGLE_APPLICATION_CREDENTIALS` environment variable to it:
+
+` $ export GOOGLE_APPLICATION_CREDENTIALS="PATH_TO_YOUR_CREDENTIALS/creds.json `
+
+Build the Dockerfile:
+
+`$ podman build -t ml_model_api:1.0 .`
+
+Run the image (we're passing the local GCP creds variable to the container):
+
+`$ podman run --rm -e GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json -v ${GOOGLE_APPLICATION_CREDENTIALS}:/tmp/credentials.json ml_model_api`
 
 ## Deploying to Cloud
 
